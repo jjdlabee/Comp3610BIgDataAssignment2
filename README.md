@@ -1,102 +1,105 @@
-# NYC Yellow Taxi Data Analysis - COMP 3610 Big Data Assignment
+# NYC Taxi Tip Prediction
+**COMP 3610 — Big Data | Assignment #2**
 
-Analysis of NYC Yellow Taxi trip patterns for January 2024 using Polars, DuckDB, and Streamlit.
+Predicts NYC yellow taxi tip amounts and classifies high-tip trips using the January 2024 TLC trip dataset. Covers the full ML pipeline: data ingestion, feature engineering, model training, hyperparameter tuning, neural network implementation, and evaluation.
 
-## Overview
+---
 
-This project implements a **complete data pipeline** for analyzing millions of taxi trips, from raw data ingestion through interactive visualization. The assignment demonstrates:
+## Project Structure
 
-- **Data Ingestion & Validation**: Download and validate multi-gigabyte parquet datasets
-- **Data Cleaning & Transformation**: Remove anomalies, engineer features, aggregate to hourly grain
-- **Exploratory Analysis**: SQL-based queries revealing temporal patterns, geographic hotspots, payment trends
-- **Interactive Dashboard**: Real-time filtering and visualization of 5 key metrics and insights
+```
+Comp3610BigDataAssignment2/
+├── notebook.ipynb             ← Main analysis notebook
+├── README.md                  ← This file
+├── requirements.txt           ← Python dependencies
+├── .gitignore                 ← Excludes data, models, venv
+├── data/
+│   └── raw/                   ← Downloaded parquet + CSV (git-ignored)
+└── models/                    ← Saved model artifacts (git-ignored)
+```
 
-## Submission Requirements
-
-**GitHub Repository**: [jjdlabee/Comp3610BigDataAssingment](https://github.com/jjdlabee/Comp3610BigDataAssingment)
-
-**Deployed Dashboard**: [Streamlit Cloud URL](https://jjdlabee-comp3610bigdataassingment-app-helj5m.streamlit.app/)
-
-## Prerequisites
-
-- **Python 3.13+**
-- Virtual environment (venv/conda)
-- ~500MB disk space for processed data
+---
 
 ## Setup Instructions
 
-### 1. Extract the Project
-
+### 1. Clone the repository
 ```bash
-cd Comp3610BigDataAssingment
+git clone <your-repo-url>
+cd Comp3610BigDataAssignment2
 ```
 
-### 2. Create a Virtual Environment
-
+### 2. Create and activate a virtual environment
 ```bash
+# Windows
 python -m venv .venv
-
-# Windows:
 .venv\Scripts\activate
 
-# macOS/Linux:
+# macOS / Linux
+python -m venv .venv
 source .venv/bin/activate
 ```
 
-### 3. Install Dependencies
-
+### 3. Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-## Running the Project
+### 4. Create required directories
+```bash
+mkdir -p data/raw models
+```
 
-### Run the Analytical Notebook
-
+### 5. Run the notebook
 ```bash
 jupyter notebook notebook.ipynb
 ```
 
-The notebook executes a complete ETL pipeline:
+> **Note:** The notebook downloads data automatically on first run (~700 MB). Ensure you have a stable internet connection and at least 8 GB of free RAM before running all cells.
 
-- **Part 1**: Data ingestion from HTTP + schema validation
-- **Part 2**: Data cleaning + feature engineering (remove nulls, invalid fares, temporal anomalies)
-- **Part 3**: Exploratory analysis with 6 SQL queries + 5 Plotly visualizations
-- **Part 4**: Interactive dashboard overview
+---
 
-Execution time: ~2-3 minutes
+## Data Sources
 
-### Run the Interactive Dashboard
+| File | Source | Size |
+|---|---|---|
+| `yellow_tripdata_2024-01.parquet` | [TLC Trip Data](https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2024-01.parquet) | ~700 MB |
+| `taxi_zone_lookup.csv` | [TLC Zone Lookup](https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv) | ~12 KB |
 
-```bash
-streamlit run app.py
-```
+Data is downloaded programmatically in the notebook and saved to `data/raw/`. These files are excluded from version control via `.gitignore`.
 
-Open browser to `http://localhost:8501`
+---
 
-## Data Source
+## Tasks Covered
 
-**NYC Yellow Taxi Trip Records** (January 2024)
+| # | Task | Description |
+|---|---|---|
+| 1 | Data Ingestion | Programmatic download, lazy loading with Polars |
+| 2 | Preprocessing | Null handling, borough joins, feature engineering |
+| 3 | Target Variables | `tip_amount` (regression), `high_tip` (classification) |
+| 4 | Data Splitting | Stratified 70/15/15 split, StandardScaler |
+| 5 | Regression Models | Linear Regression, Random Forest Regressor |
+| 6 | Classification Models | Logistic Regression, Random Forest Classifier |
+| 7 | Hyperparameter Tuning | RandomizedSearchCV on best model |
+| 8 | Cross-Validation | 5-fold stratified CV on 300k sample |
+| 9 | Neural Network | PyTorch feedforward network, 20 epochs |
+| 10 | Evaluation | ROC curves, confusion matrix, residual analysis |
+| 11 | Feature Importance | Random Forest importances, regression coefficients |
+| 12 | Written Analysis | Model comparison, limitations, improvements |
 
-- Source: NYC Taxi & Limousine Commission (TLC)
-- Format: Parquet (trip-level records)
-- Volume: ~1.9 million trips
-- Key fields: timestamps, locations, fare, distance, payment type, tips
+---
 
-**Zone Reference**: `data/raw/taxi_zone_lookup.csv`
+## Requirements
 
-## Key Findings
+- Python 3.10+
+- ~8 GB RAM recommended
+- GPU optional (CUDA-compatible for faster neural network training)
 
-1. **Geographic Hotspot**: Manhattan dominates with 75%+ of pickups, particularly Midtown Center
-2. **Rush Hour Patterns**: Weekday peaks at 8-9 AM (commute) and 5-6 PM (evening rush)
-3. **Payment Methods**: Credit cards account for >70% of transactions
-4. **Tipping**: Higher during business hours (8 AM-6 PM); lower late-night
-5. **Trip Distance**: Right-skewed distribution with median ~2 miles; most trips within Manhattan
+---
 
-## AI Usage
+## Key Results
 
-Github copilot was used for quick completion of repetative lines.
-
-ChatGPT was used to simple format and concepts learning (ie. setting up vs code with python and a notbook)
-
-VS Code Copilot with Claude was used for fast creation of readme file, formating of text in the notebook and it heavily assisted with the visuallization using streamlit (Some stuff just was not clicking in the short timespan)
+| Task | Best Model | Key Metric |
+|---|---|---|
+| Regression | Random Forest Regressor | R² = 0.689, MAE = $1.02 |
+| Classification | Random Forest Classifier (tuned) | F1 = 0.8627, AUC = 0.8024 |
+| Neural Network | TipClassifier (PyTorch) | F1 = 0.8637, AUC = 0.8000 |

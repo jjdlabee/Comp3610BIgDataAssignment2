@@ -234,3 +234,16 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# ── Saved model artifacts ─────────────────────────────────────────
+models/
+*.pt
+
+# ── Generated plots ───────────────────────────────────────────────
+*.png
+*.jpg
+*.jpeg
+*.pdf
+
+
+
