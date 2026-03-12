@@ -15,7 +15,7 @@ Comp3610BigDataAssignment2/
 ├── .gitignore                 ← Excludes data, models, venv
 ├── data/
 │   └── raw/                   ← Downloaded parquet + CSV (git-ignored)
-└── models/                    ← Saved model artifacts (git-ignored)
+└── models                    ← Saved model artifacts (git-ignored)
 ```
 
 ---
